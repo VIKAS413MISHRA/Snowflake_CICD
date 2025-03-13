@@ -8,6 +8,9 @@ on:
       - 'Migrations/**'
   workflow_dispatch:
 
+env:
+  SNOWFLAKE_USER:  ${{vars.SNOWFLAKE_USER}}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
