@@ -33,22 +33,23 @@ jobs:
         run: |
           pip install --upgrade snowflake-connector-python schemachange
 
-      - name: Decode private key
+      - name: writting private key into a file
         run: |
-          echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" > decoded_private_key.p8
-          chmod 600 decoded_private_key.p8
+          echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" > private_key.p8
+          chmod 600 private_key.p8
 
       - name: Create connections.toml
         run: |
           cat <<EOF > connections.toml
-          [connections.connections]
+          [snowflake]
           account = "${{ secrets.SNOWFLAKE_ACCOUNT }}"
           user = "${{ env.SNOWFLAKE_USER }}"
           role = "${{ secrets.SNOWFLAKE_ROLE }}"
           warehouse = "${{ secrets.SNOWFLAKE_WAREHOUSE }}"
           database = "${{ secrets.SNOWFLAKE_DATABASE }}"
           schema = "${{ secrets.SNOWFLAKE_SCHEMA }}"
-          private-key = "$(cat decoded_private_key.p8)"
+          authenticator = "snowflake_jwt"
+          private_key_file = "private_key.p8"
           private_key_file_pwd = "${{ secrets.SNOWFLAKE_PRIVATE_KEY_PASSPHRASE }}"
           EOF
 
@@ -60,4 +61,4 @@ jobs:
 
       - name: Run schemachange
         run: schemachange -f $GITHUB_WORKSPACE/Migrations -c ${{ secrets.SNOWFLAKE_DATABASE }}.SCHEMACHANGE.CHANGE_HISTORY 
-            --create-change-history-table --connections-file-path connections.toml --connection-name connections
+            --create-change-history-table --connections-file-path connections.toml --connection-name snowflake
