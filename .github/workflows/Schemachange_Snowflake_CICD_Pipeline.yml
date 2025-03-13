@@ -1,4 +1,5 @@
-name: SNOWFLAKE_CICD
+
+name: CI
 
 on:
   push:
@@ -20,18 +21,22 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.8
-
+      -  
+        run: |
+          echo "Printing Snowflake Account"
+          echo "${{ secrets.SNOWFLAKE_ACCOUNT }}"
       - name: Install schemachange and snowflake connector
         run: |
           pip install --upgrade snowflake-connector-python schemachange
 
       - name: Decode private key
         run: |
-          echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" | base64 -d > decoded_private_key.pem
+          echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" > decoded_private_key.p8
+          chmod 600 decoded_private_key.p8
 
       - name: Decode private key passphrase
         run: |
-          echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY_PASSPHRASE }}"
+          echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY_PASSPHRASE }}" 
 
       - name: Create connections.toml
         run: |
