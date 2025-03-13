@@ -59,4 +59,5 @@ jobs:
         run: chmod 600 connections.toml
 
       - name: Run schemachange
-        run: schemachange -f Migrations -u $SNOWFLAKE_USER --connections-file-path connections.toml --connection-name connections
+        run: schemachange -f $GITHUB_WORKSPACE/Migrations -c ${{ secrets.SNOWFLAKE_DATABASE }}.SCHEMACHANGE.CHANGE_HISTORY 
+            --create-change-history-table --connections-file-path connections.toml --connection-name connections
