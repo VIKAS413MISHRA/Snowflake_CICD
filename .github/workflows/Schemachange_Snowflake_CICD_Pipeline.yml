@@ -35,16 +35,12 @@ jobs:
           echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" > decoded_private_key.p8
           chmod 600 decoded_private_key.p8
 
-      - name: Decode private key passphrase
-        run: |
-          echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY_PASSPHRASE }}"
-
       - name: Create connections.toml
         run: |
           cat <<EOF > connections.toml
           [connections.connections]
           account = "${{ secrets.SNOWFLAKE_ACCOUNT }}"
-          user = "${{ env.SNOWFLAKE_USER }}"
+          User = "${{ env.SNOWFLAKE_USER }}"
           role = "${{ secrets.SNOWFLAKE_ROLE }}"
           warehouse = "${{ secrets.SNOWFLAKE_WAREHOUSE }}"
           database = "${{ secrets.SNOWFLAKE_DATABASE }}"
